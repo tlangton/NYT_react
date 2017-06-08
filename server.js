@@ -19,8 +19,14 @@ app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
 app.use(express.static("./public"));
 
-mongoose.connect("mongodb://localhost/nytreact");
-// mongoose.connect('mongodb://heroku_jns4phwt:61tt9c1oiotedcl5ndjhfv9pn5@ds019936.mlab.com:19936/heroku_jns4phwt');
+// Database configuration with mongoose
+var databaseUri = "mongodb://localhost/nytreact";
+
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI);
+} else {
+  mongoose.connect(databaseUri);
+}
 
 var db = mongoose.connection;
 
@@ -69,6 +75,7 @@ app.delete("/api/saved/:id", function(req, res) {
   });
 });
 
-app.listen(PORT, function() {
-  console.log("App listening on PORT: " + PORT);
+// Listen on port 3000 if not heroku
+app.listen(process.env.PORT || 3000, function() {
+  console.log("App running on port 3000!");
 });
